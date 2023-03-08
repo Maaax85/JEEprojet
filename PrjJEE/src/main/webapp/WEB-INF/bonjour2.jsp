@@ -44,6 +44,9 @@
 	        <p>
 	            <label for="previousFormation">Formation précédente : </label>
 	        </p>
+	        <p>
+	            <label for="Test">Test : </label>
+	        </p>
         
     </form>
     

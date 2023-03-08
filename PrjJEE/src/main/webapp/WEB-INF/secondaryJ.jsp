@@ -24,10 +24,10 @@
 <body>
     
     <form>
-    	<p><a href="Test">Premiere page</a></p>
+    	<p><a href="Primary">Premiere page</a></p>
     </form>
     
-    <form method="post" action="bonjour">
+    <form method="post" action="seondaryJ">
     	
 	        <p>
 	            <label for="nom">Nom : </label>
@@ -50,7 +50,7 @@
         
     </form>
     
-    <form method="post" action="bonjour2">
+    <form method="post" action="seondaryJ">
 	        <input type="hidden" name="action" value="boutonCompositionAutomatique" />
 	        <input type="submit" value="Composition des équipes automatique"/>
     </form>

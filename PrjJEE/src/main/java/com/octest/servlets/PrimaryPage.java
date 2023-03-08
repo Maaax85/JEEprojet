@@ -26,9 +26,9 @@ import com.octest.beans.Etudiant;
 /**
  * Servlet implementation class Test
  */
-@WebServlet("/Test2")
+@WebServlet("/Primary")
 @MultipartConfig
-public class Test2 extends HttpServlet {
+public class PrimaryPage extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private ArrayList<Etudiant> etudiants;
     
@@ -36,7 +36,7 @@ public class Test2 extends HttpServlet {
     public static final String CHEMIN_FICHIERS = "C:/Users/ledum/Documents"; // A changer
     
        
-    public Test2() {
+    public PrimaryPage() {
         super();
         this.etudiants = new ArrayList<Etudiant>();
     }
@@ -53,10 +53,10 @@ public class Test2 extends HttpServlet {
     	int indexEtudiant = this.getEtudiants().indexOf(etudiant);
     	if(indexEtudiant != -1) {
     		this.getEtudiants().remove(indexEtudiant);
-    		//TODO : Prévenir utilisateur succès de l'opération
+    		//TODO : Prï¿½venir utilisateur succï¿½s de l'opï¿½ration
     	}
     	else {
-    		//TODO : Prévenir utilisateur échec de l'opération
+    		//TODO : Prï¿½venir utilisateur ï¿½chec de l'opï¿½ration
     	}
     }
     
@@ -84,7 +84,7 @@ public class Test2 extends HttpServlet {
     }
     
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        this.getServletContext().getRequestDispatcher("/WEB-INF/bonjour2.jsp").forward(request, response);
+        this.getServletContext().getRequestDispatcher("/WEB-INF/primaryJ.jsp").forward(request, response);
     }
 
     public void doPost( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException {
@@ -104,10 +104,10 @@ public class Test2 extends HttpServlet {
             } else if (action.equals("boutonLoadEtus")) {
             	
 	        	try {
-	            	// On récupère le champ du fichier
+	            	// On rï¿½cupï¿½re le champ du fichier
 	            	Part part = request.getPart("fichier");
 	            	
-	            	// On vérifie qu'on a bien reçu un fichier
+	            	// On vï¿½rifie qu'on a bien reï¿½u un fichier
 	                String nomFichier = this.getNomFichier(part);
 	
 	                // Si on a bien un fichier
@@ -117,10 +117,10 @@ public class Test2 extends HttpServlet {
 	                     nomFichier = nomFichier.substring(nomFichier.lastIndexOf('/') + 1)
 	                            .substring(nomFichier.lastIndexOf('\\') + 1);
 	
-	                    // On écrit définitivement le fichier sur le disque
+	                    // On ï¿½crit dï¿½finitivement le fichier sur le disque
 	                    ecrireFichier(part, nomFichier, CHEMIN_FICHIERS);
 	                     
-	                    // On récupère les infos du fichier et on créé les étudiants résultants
+	                    // On rï¿½cupï¿½re les infos du fichier et on crï¿½ï¿½ les ï¿½tudiants rï¿½sultants
 	                    this.addEtudiants(request, CHEMIN_FICHIERS, nomFichier);
 	                }
 	            }
@@ -130,10 +130,10 @@ public class Test2 extends HttpServlet {
             }
         }
         
-        //TODO : Créer seconde page
+        //TODO : Crï¿½er seconde page
         
         HttpSession session = request.getSession();
-        this.getServletContext().getRequestDispatcher("/WEB-INF/bonjour.jsp").forward(request, response);
+        this.getServletContext().getRequestDispatcher("/WEB-INF/primaryJ.jsp").forward(request, response);
     }
     
     private void ecrireFichier( Part part, String nomFichier, String chemin ) throws IOException {

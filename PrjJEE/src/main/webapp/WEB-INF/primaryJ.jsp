@@ -30,10 +30,10 @@
     <c:out value="${ previousFormation }" />
     
     <form>
-    	<p><a href="Test2">Seconde page</a></p>
+    	<p><a href="Secondary">Seconde page</a></p>
     </form>
     
-    <form method="post" action="bonjour">
+    <form method="post" action="primaryJ">
     	
 	        <p>
 	            <label for="nom">Nom : </label>
@@ -62,7 +62,7 @@
     </form>
     
     <c:if test="${ !empty fichier }"><p><c:out value="Le fichier ${ fichier } a été uploadé !" /></p></c:if>
-    <form method="post" action="bonjour" enctype="multipart/form-data">
+    <form method="post" action="primaryJ" enctype="multipart/form-data">
         <p>
             <label for="fichier">Fichier à envoyer : </label>
             <input type="file" name="fichier" id="fichier" />

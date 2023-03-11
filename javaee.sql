@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : sam. 11 mars 2023 à 18:40
+-- Généré le : sam. 11 mars 2023 à 20:11
 -- Version du serveur : 8.0.32
 -- Version de PHP : 8.0.26
 
@@ -24,25 +24,52 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `equipe`
+--
+
+DROP TABLE IF EXISTS `equipe`;
+CREATE TABLE IF NOT EXISTS `equipe` (
+  `id_equipe` int NOT NULL AUTO_INCREMENT,
+  `nom` varchar(15) NOT NULL,
+  PRIMARY KEY (`id_equipe`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `equipe_etudiant`
+--
+
+DROP TABLE IF EXISTS `equipe_etudiant`;
+CREATE TABLE IF NOT EXISTS `equipe_etudiant` (
+  `id_equipe` int NOT NULL,
+  `id_etudiant` int NOT NULL,
+  PRIMARY KEY (`id_equipe`,`id_etudiant`),
+  UNIQUE KEY `uk_etudiant_equipe` (`id_etudiant`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `etudiant`
 --
 
 DROP TABLE IF EXISTS `etudiant`;
 CREATE TABLE IF NOT EXISTS `etudiant` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `nom` varchar(50) DEFAULT NULL,
-  `prenom` varchar(50) DEFAULT NULL,
+  `id_etudiant` int NOT NULL AUTO_INCREMENT,
+  `nom` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `prenom` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `genre` enum('homme','femme') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `previousSite` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `previousFormation` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id_etudiant`)
 ) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `etudiant`
 --
 
-INSERT INTO `etudiant` (`id`, `nom`, `prenom`, `genre`, `previousSite`, `previousFormation`) VALUES
+INSERT INTO `etudiant` (`id_etudiant`, `nom`, `prenom`, `genre`, `previousSite`, `previousFormation`) VALUES
 (1, 'Dupont', 'Jean', 'homme', NULL, NULL),
 (2, 'Martin', 'Lucie', 'femme', NULL, NULL),
 (3, 'Dubois', 'Marie', 'femme', NULL, NULL),
@@ -64,6 +91,17 @@ INSERT INTO `etudiant` (`id`, `nom`, `prenom`, `genre`, `previousSite`, `previou
 (19, 'David', 'Chloé', 'femme', NULL, NULL),
 (20, 'Johnson', 'Hugo', 'homme', NULL, NULL),
 (21, 'Legendre', 'Louis', 'homme', 'wtf is this?', 'et ca? ');
+
+--
+-- Contraintes pour les tables déchargées
+--
+
+--
+-- Contraintes pour la table `equipe_etudiant`
+--
+ALTER TABLE `equipe_etudiant`
+  ADD CONSTRAINT `fk_equipe_etudiant_equipe` FOREIGN KEY (`id_equipe`) REFERENCES `equipe` (`id_equipe`),
+  ADD CONSTRAINT `fk_equipe_etudiant_etudiant` FOREIGN KEY (`id_etudiant`) REFERENCES `etudiant` (`id_etudiant`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

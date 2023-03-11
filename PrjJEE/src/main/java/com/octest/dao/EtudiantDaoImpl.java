@@ -5,7 +5,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
+import com.octest.beans.BeanException;
 import com.octest.beans.Etudiant;
 
 public class EtudiantDaoImpl implements EtudiantDao {
@@ -16,7 +16,7 @@ public class EtudiantDaoImpl implements EtudiantDao {
     }
 
     @Override
-    public void ajouter(Etudiant etudiant) {
+    public void ajouter(Etudiant etudiant) throws DaoException{
         Connection connexion = null;
         PreparedStatement preparedStatement = null;
 
@@ -31,7 +31,22 @@ public class EtudiantDaoImpl implements EtudiantDao {
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            try {
+                if (connexion != null) {
+                    connexion.rollback();
+                }
+            } catch (SQLException e2) {
+            }
+            throw new DaoException("Impossible de communiquer avec la base de données");
+        }
+        finally {
+            try {
+                if (connexion != null) {
+                    connexion.close();  
+                }
+            } catch (SQLException e) {
+                throw new DaoException("Impossible de communiquer avec la base de données");
+            }
         }
 
     }
@@ -39,7 +54,7 @@ public class EtudiantDaoImpl implements EtudiantDao {
     
 
     @Override
-    public List<Etudiant> lister() {
+    public List<Etudiant> lister() throws DaoException {
         List<Etudiant> etudiants = new ArrayList<Etudiant>();
         Connection connexion = null;
         Statement statement = null;
@@ -61,7 +76,18 @@ public class EtudiantDaoImpl implements EtudiantDao {
                 etudiants.add(etudiant);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DaoException("Impossible de communiquer avec la base de données");
+        } catch (BeanException e) {
+            throw new DaoException("Les données de la base sont invalides");
+        }
+        finally {
+            try {
+                if (connexion != null) {
+                    connexion.close();  
+                }
+            } catch (SQLException e) {
+                throw new DaoException("Impossible de communiquer avec la base de données");
+            }
         }
         return etudiants;
     }

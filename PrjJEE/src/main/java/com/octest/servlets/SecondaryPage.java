@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import resources.Config;
 
 /**
  * Servlet implementation class Test
@@ -23,7 +24,7 @@ public class SecondaryPage extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	public static final int TAILLE_TAMPON = 10240;
-    String path = getServletContext().getInitParameter("PATH");
+	String path = Config.PATH;
 
 	private static ArrayList<String> infos;
 

@@ -22,7 +22,11 @@
 
 </head>
 <body>
-
+	<c:if test="${ !empty erreur }">
+		<p style="color: red;">
+			<c:out value="${ erreur }" />
+		</p>
+	</c:if>
 	<c:out value="${ nom }" />
 	<c:out value="${ prenom }" />
 	<c:out value="${ genre }" />
@@ -46,8 +50,7 @@
 				name="prenom" id="prenom" />
 		</p>
 		<p>
-			<label for="genre">Genre : </label> 
-			<select name="genre" id="genre">
+			<label for="genre">Genre : </label> <select name="genre" id="genre">
 				<option value=homme>Homme</option>
 				<option value=femme>Femme</option>
 			</select>

@@ -19,9 +19,12 @@ import java.io.FileReader;
 
 import javax.servlet.http.Part;
 
+import com.octest.beans.BeanException;
 import com.octest.beans.Etudiant;
+import com.octest.dao.DaoException;
 import com.octest.dao.DaoFactory;
 import com.octest.dao.EtudiantDao;
+import resources.Config;
 
 /**
  * Servlet implementation class Test
@@ -30,7 +33,7 @@ import com.octest.dao.EtudiantDao;
 @MultipartConfig
 public class PrimaryPage extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    String path = getServletContext().getInitParameter("PATH");
+    String path = Config.PATH;
     
     public static final int TAILLE_TAMPON = 10240;
 	private EtudiantDao etudiantDao;
@@ -55,7 +58,11 @@ public class PrimaryPage extends HttpServlet {
               index++;
            }
            
-           etudiantDao.ajouter(new Etudiant(infosEtu));
+           try {
+			etudiantDao.ajouter(new Etudiant(infosEtu));
+		} catch (DaoException e) {
+            request.setAttribute("erreur", e.getMessage());
+        }
         
 	       request.setAttribute(nomChamp, nomFichier);
 		}
@@ -79,9 +86,14 @@ public class PrimaryPage extends HttpServlet {
                 String previousSite = request.getParameter("previousSite");
                 String previousFormation = request.getParameter("previousFormation");
                 
-                Etudiant etudiant = new Etudiant(nom, prenom, genre, previousSite, previousFormation);
-                etudiantDao.ajouter(etudiant);
-                
+                Etudiant etudiant;
+				try {
+					etudiant = new Etudiant(nom, prenom, genre, previousSite, previousFormation);
+					etudiantDao.ajouter(etudiant);
+                } catch (BeanException | DaoException e) {
+                	request.setAttribute("erreur", e.getMessage());
+                }
+				
             } else if (action.equals("boutonLoadEtus")) {
             	
 	        	try {

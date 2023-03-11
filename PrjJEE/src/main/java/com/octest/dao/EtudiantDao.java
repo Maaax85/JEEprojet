@@ -6,5 +6,5 @@ import com.octest.beans.Etudiant;
 
 public interface EtudiantDao {
     void ajouter( Etudiant etudiant ) throws DaoException;
-    List<Etudiant> lister() throws DaoException;
+    List<Etudiant> listerSansGroupe() throws DaoException;
 }

@@ -1,34 +1,44 @@
 package com.octest.beans;
 
-import com.octest.beans.Etudiant;
 
 public class Equipe {
 
-	private String name;
-	private int id;
+	private String nom;
+	int nombreEtu;
 	public Etudiant[] membres;
-	
-	
-	
-	
-	//Getters and Setters
-	public String getName() {
-		return name;
+
+	public Equipe(int nombreEtu, String nom, Etudiant[] membres) throws BeanException {
+		if (membres.length != nombreEtu) {
+			throw new BeanException("Le nombre d'étudiant ne correspond pas");}
+		else {
+			this.nom = nom;
+			this.membres = membres;
+		}
 	}
-	public void setName(String name) {
-		this.name = name;
+
+	// Getters and Setters
+	public int getNombreEtu() {
+		return nombreEtu;
 	}
-	public int getId() {
-		return id;
+
+	public void setNombreEtu(int nombreEtu) {
+		this.nombreEtu = nombreEtu;
 	}
-	public void setId(int id) {
-		this.id = id;
+
+	public String getNom() {
+		return nom;
 	}
+
+	public void setNom(String nom) {
+		this.nom = nom;
+	}
+
 	public Etudiant[] getMembres() {
 		return membres;
 	}
+
 	public void setMembres(Etudiant[] membres) {
 		this.membres = membres;
 	}
-	
+
 }

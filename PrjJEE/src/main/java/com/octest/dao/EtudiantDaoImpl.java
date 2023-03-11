@@ -54,7 +54,7 @@ public class EtudiantDaoImpl implements EtudiantDao {
     
 
     @Override
-    public List<Etudiant> lister() throws DaoException {
+    public List<Etudiant> listerSansGroupe() throws DaoException {
         List<Etudiant> etudiants = new ArrayList<Etudiant>();
         Connection connexion = null;
         Statement statement = null;
@@ -63,16 +63,20 @@ public class EtudiantDaoImpl implements EtudiantDao {
         try {
             connexion = daoFactory.getConnection();
             statement = connexion.createStatement();
-            resultat = statement.executeQuery("SELECT nom, prenom FROM etudiant;");
+            resultat = statement.executeQuery("SELECT e.nom, e.prenom "
+            		+ "FROM etudiant e "
+            		+ "LEFT OUTER JOIN equipe_etudiant ee ON e.id_etudiant = ee.id_etudiant "
+            		+ "WHERE ee.id_etudiant IS NULL;");
 
             while (resultat.next()) {
                 String nom = resultat.getString("nom");
                 String prenom = resultat.getString("prenom");
+                String genre = resultat.getString("genre");
+                String previousSite = resultat.getString("previousSite");
+                String previousFormation = resultat.getString("previousFormation");
 
-                Etudiant etudiant = new Etudiant("nom","prenom","genre","previousSite","previousFormation");
-                etudiant.setNom(nom);
-                etudiant.setPrenom(prenom);
-
+                Etudiant etudiant = new Etudiant(nom,prenom,genre,previousSite,previousFormation);
+                
                 etudiants.add(etudiant);
             }
         } catch (SQLException e) {

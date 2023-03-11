@@ -31,10 +31,9 @@
 	</form>
 
 	<form method="post" action="Secondary">
-
 		<ul>
-			<c:forEach items="${SecondaryPage.getInformations()}" var="info">
-				<li>${info}</li>
+			<c:forEach var="equipes" items="${ equipes }">
+				<li><c:out value="${ equipes.nom }" /> </li>
 			</c:forEach>
 		</ul>
 

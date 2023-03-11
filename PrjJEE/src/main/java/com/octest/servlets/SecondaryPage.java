@@ -13,6 +13,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import com.octest.beans.BeanException;
+import com.octest.dao.DaoException;
+import com.octest.dao.DaoFactory;
+import com.octest.dao.EquipeDao;
+
 import resources.Config;
 
 /**
@@ -27,17 +33,21 @@ public class SecondaryPage extends HttpServlet {
 	String path = Config.PATH;
 
 	private static ArrayList<String> infos;
+	private EquipeDao equipeDao;
 
-
-	public SecondaryPage() {
-		super();
-        //this.database = new Database(); //Voir modif à faire dedans
-		infos = new ArrayList<String>();
-		this.fillInfos(); //Et modifier intérieur de la méthode
-	}
+	public void init() throws ServletException {
+        DaoFactory daoFactory = DaoFactory.getInstance();
+        this.equipeDao = daoFactory.getEquipeDao();
+    }   
+	
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		try {
+			request.setAttribute("equipes", equipeDao.listerEquipes());
+		} catch (DaoException e) {
+        	request.setAttribute("erreur", e.getMessage());
+        }
 		this.getServletContext().getRequestDispatcher("/WEB-INF/secondaryJ.jsp").forward(request, response);
 	}
 
@@ -56,9 +66,7 @@ public class SecondaryPage extends HttpServlet {
 		this.getServletContext().getRequestDispatcher("/WEB-INF/secondaryJ.jsp").forward(request, response);
 	}
 
-	public static ArrayList<String> getInformations() {
-		return infos;
-	}
+	
 	
 	public void fillInfos() {
 //		try {

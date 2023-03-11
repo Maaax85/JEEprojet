@@ -1,7 +1,6 @@
 package com.octest.servlets;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -15,13 +14,14 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 
 import javax.servlet.http.Part;
 
 import com.octest.beans.Etudiant;
+import com.octest.dao.DaoFactory;
+import com.octest.dao.EtudiantDao;
 
 /**
  * Servlet implementation class Test
@@ -30,36 +30,16 @@ import com.octest.beans.Etudiant;
 @MultipartConfig
 public class PrimaryPage extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private ArrayList<Etudiant> etudiants;
+    
     
     public static final int TAILLE_TAMPON = 10240;
-    public static final String CHEMIN_FICHIERS = "C:/Users/ledum/Documents"; // A changer
+    public static final String CHEMIN_FICHIERS = "C:/Users/legen/Documents/Test/Imports/"; // A changer
+	private EtudiantDao etudiantDao;
     
-       
-    public PrimaryPage() {
-        super();
-        this.etudiants = new ArrayList<Etudiant>();
-    }
-    
-    public ArrayList<Etudiant> getEtudiants() {
-    	return this.etudiants;
-    }
-    
-    public void addEtudiant(Etudiant etudiant) {
-    	this.getEtudiants().add(etudiant); 
-    }
-    
-    public void removeEtudiant (Etudiant etudiant) {
-    	int indexEtudiant = this.getEtudiants().indexOf(etudiant);
-    	if(indexEtudiant != -1) {
-    		this.getEtudiants().remove(indexEtudiant);
-    		//TODO : Pr�venir utilisateur succ�s de l'op�ration
-    	}
-    	else {
-    		//TODO : Pr�venir utilisateur �chec de l'op�ration
-    	}
-    }
-    
+    public void init() throws ServletException {
+        DaoFactory daoFactory = DaoFactory.getInstance();
+        this.etudiantDao = daoFactory.getEtudiantDao();
+    }   
     public void addEtudiants(HttpServletRequest request, String nomChamp, String nomFichier) throws IOException {
     	File file = new File(nomChamp+nomFichier);
         FileReader fr = new FileReader(file);
@@ -76,12 +56,14 @@ public class PrimaryPage extends HttpServlet {
               index++;
            }
            
-           this.addEtudiant(new Etudiant(infosEtu));
+           etudiantDao.ajouter(new Etudiant(infosEtu));
         
 	       request.setAttribute(nomChamp, nomFichier);
 		}
 	    br.close();
     }
+    
+    
     
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         this.getServletContext().getRequestDispatcher("/WEB-INF/primaryJ.jsp").forward(request, response);
@@ -99,7 +81,7 @@ public class PrimaryPage extends HttpServlet {
                 String previousFormation = request.getParameter("previousFormation");
                 
                 Etudiant etudiant = new Etudiant(nom, prenom, genre, previousSite, previousFormation);
-                this.addEtudiant(etudiant);
+                etudiantDao.ajouter(etudiant);
                 
             } else if (action.equals("boutonLoadEtus")) {
             	

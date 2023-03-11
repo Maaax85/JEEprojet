@@ -1,5 +1,6 @@
 package com.octest.beans;
 
+
 public class Etudiant {
 
 	private String nom;
@@ -27,6 +28,7 @@ public class Etudiant {
 			System.out.println("Etudiant : " + infosEtu[0]);
 		}
 	}
+	
 	
 	//Getters and Setters
 	

@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import com.octest.forms.Database;
 
 /**
  * Servlet implementation class Test
@@ -28,7 +27,6 @@ public class SecondaryPage extends HttpServlet {
 
 	private static ArrayList<String> infos;
 
-	private Database database;
 
 	public SecondaryPage() {
 		super();

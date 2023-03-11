@@ -30,10 +30,9 @@ import com.octest.dao.EtudiantDao;
 @MultipartConfig
 public class PrimaryPage extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    
+    String path = getServletContext().getInitParameter("PATH");
     
     public static final int TAILLE_TAMPON = 10240;
-    public static final String CHEMIN_FICHIERS = "C:/Users/legen/Documents/Test/Imports/"; // A changer
 	private EtudiantDao etudiantDao;
     
     public void init() throws ServletException {
@@ -100,10 +99,10 @@ public class PrimaryPage extends HttpServlet {
 	                            .substring(nomFichier.lastIndexOf('\\') + 1);
 	
 	                    // On �crit d�finitivement le fichier sur le disque
-	                    ecrireFichier(part, nomFichier, CHEMIN_FICHIERS);
+	                    ecrireFichier(part, nomFichier, path);
 	                     
 	                    // On r�cup�re les infos du fichier et on cr�� les �tudiants r�sultants
-	                    this.addEtudiants(request, CHEMIN_FICHIERS, nomFichier);
+	                    this.addEtudiants(request, path, nomFichier);
 	                }
 	            }
 	            catch ( Exception ePasDeFichier ){

@@ -23,7 +23,7 @@ public class SecondaryPage extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	public static final int TAILLE_TAMPON = 10240;
-	public static final String CHEMIN_FICHIERS = "C:/Users/ledum/Documents"; // A changer
+    String path = getServletContext().getInitParameter("PATH");
 
 	private static ArrayList<String> infos;
 

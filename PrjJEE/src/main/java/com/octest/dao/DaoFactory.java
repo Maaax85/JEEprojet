@@ -23,7 +23,7 @@ public class DaoFactory {
         }
 
         DaoFactory instance = new DaoFactory(
-                "jdbc:mysql://localhost:3306/javaee?serverTimezone=UTC&useSSL=false", "root", "root");
+                "jdbc:mysql://localhost:3306/javaee?serverTimezone=UTC&useSSL=false", "root", "");
         return instance;
     }
 

@@ -3,6 +3,7 @@ package com.octest.dao;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import com.octest.beans.BeanException;
 import com.octest.beans.Equipe;
@@ -10,9 +11,11 @@ import com.octest.beans.Etudiant;
 
 public class EquipesDaoImpl implements EquipeDao {
 	private DaoFactory daoFactory;
+	private EtudiantDao etudiantDao;
 
 	EquipesDaoImpl(DaoFactory daoFactory) {
 		this.daoFactory = daoFactory;
+		this.etudiantDao = daoFactory.getEtudiantDao();
 	}
 
 	@Override
@@ -23,9 +26,8 @@ public class EquipesDaoImpl implements EquipeDao {
 		try {
 			connexion = daoFactory.getConnection();
 			preparedStatement = connexion.prepareStatement(
-					"INSERT INTO etudiant(nom, prenom, genre, previousSite, previousFormation) VALUES(?, ?, ?, ?, ?);");
+					"INSERT INTO equipe(nom) VALUES(?)");
 			preparedStatement.setString(1, equipe.getNom());
-
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
 			try {
@@ -44,7 +46,6 @@ public class EquipesDaoImpl implements EquipeDao {
 				throw new DaoException("Impossible de communiquer avec la base de données");
 			}
 		}
-
 	}
 
 	@Override
@@ -113,6 +114,146 @@ public class EquipesDaoImpl implements EquipeDao {
 			}
 		}
 		return equipes;
+	}
+
+	@Override
+	public void ajouterEtudiant(String nomEquipe, String nomEtudiant) throws DaoException {
+
+		try {
+			for (int i = 0; i < this.listerEquipes().size(); i++) {
+				if (this.listerEquipes().get(i).getNom() == nomEquipe
+						&& this.listerEquipes().get(i).getNombreEtu() < 6) {
+					boolean etuEstPresent = false;
+					for (int j = 0; j < this.listerEquipes().get(i).getNombreEtu(); j++) {
+						if (this.listerEquipes().get(i).getMembres().get(j).getNom().equals(nomEtudiant)) {
+							etuEstPresent = true;
+						}
+					}
+					if (!etuEstPresent) {
+						// Ajouter Etu à Equipe dans BDD
+					}
+				}
+			}
+		} catch (DaoException e) {
+			e.printStackTrace();
+		}
+
+		// BDD (Copié collé donc tout à adapter)
+		Connection connexion = null;
+		PreparedStatement preparedStatement = null;
+
+		try {
+			connexion = daoFactory.getConnection();
+			preparedStatement = connexion.prepareStatement(
+					"INSERT INTO etudiant(nom, prenom, genre, previousSite, previousFormation) VALUES(?, ?, ?, ?, ?);");
+			preparedStatement.setString(1, nomEquipe);
+
+			preparedStatement.executeUpdate();
+		} catch (SQLException e) {
+			try {
+				if (connexion != null) {
+					connexion.rollback();
+				}
+			} catch (SQLException e2) {
+			}
+			throw new DaoException("Impossible de communiquer avec la base de données");
+		} finally {
+			try {
+				if (connexion != null) {
+					connexion.close();
+				}
+			} catch (SQLException e) {
+				throw new DaoException("Impossible de communiquer avec la base de données");
+			}
+		}
+	}
+
+	@Override
+	public void retirerEtudiant(String nomEquipe, String nomEtudiant) throws DaoException {
+
+		try {
+			for (int i = 0; i < this.listerEquipes().size(); i++) {
+				if (this.listerEquipes().get(i).getNom() == nomEquipe
+						&& this.listerEquipes().get(i).getNombreEtu() < 6) {
+					for (int j = 0; j < this.listerEquipes().get(i).getNombreEtu(); j++) {
+						if (this.listerEquipes().get(i).getMembres().get(j).getNom().equals(nomEtudiant)) {
+							// Remove Etu de Equipe dans BDD
+						}
+					}
+				}
+			}
+		} catch (DaoException e) {
+			e.printStackTrace();
+		}
+
+		// BDD (Copié collé donc tout à adapter)
+		Connection connexion = null;
+		PreparedStatement preparedStatement = null;
+
+		try {
+			connexion = daoFactory.getConnection();
+			preparedStatement = connexion.prepareStatement(
+					"INSERT INTO etudiant(nom, prenom, genre, previousSite, previousFormation) VALUES(?, ?, ?, ?, ?);");
+			preparedStatement.setString(1, nomEquipe);
+
+			preparedStatement.executeUpdate();
+		} catch (SQLException e) {
+			try {
+				if (connexion != null) {
+					connexion.rollback();
+				}
+			} catch (SQLException e2) {
+			}
+			throw new DaoException("Impossible de communiquer avec la base de données");
+		} finally {
+			try {
+				if (connexion != null) {
+					connexion.close();
+				}
+			} catch (SQLException e) {
+				throw new DaoException("Impossible de communiquer avec la base de données");
+			}
+		}
+	}
+
+	@Override
+	public void genererCompositionAuto(String critereGeneration, int nbEquipeACreer) throws DaoException {
+		if (critereGeneration == "Random") {
+			try {
+				int nbEtuParEquipe = this.etudiantDao.listerSansGroupe().size() / nbEquipeACreer;
+				int nbEtuRestant = this.etudiantDao.listerSansGroupe().size() % nbEquipeACreer;
+
+				Random random = new Random();
+
+				for (int i = 0; i < nbEquipeACreer; i++) {
+					String nomEquipe = "Equipe " + (i + 1);
+					try {
+						this.ajouter(new Equipe(0, nomEquipe, null));
+					} catch (BeanException e) {
+						e.printStackTrace();
+					}
+
+					for (int j = 0; j < nbEtuParEquipe; j++) {
+						int numeroRandomEtudiant = random.nextInt(this.etudiantDao.listerSansGroupe().size()) + 1;
+						this.ajouterEtudiant(nomEquipe,
+								this.etudiantDao.listerSansGroupe().get(numeroRandomEtudiant).getNom());
+					}
+					if (nbEtuRestant != 0) {
+						int numeroRandomEtudiant = random.nextInt(this.etudiantDao.listerSansGroupe().size()) + 1;
+						this.ajouterEtudiant(nomEquipe,
+								this.etudiantDao.listerSansGroupe().get(numeroRandomEtudiant).getNom());
+						nbEtuRestant--;
+					}
+				}
+
+			} catch (DaoException e) {
+				e.printStackTrace();
+			}
+		} else if (critereGeneration == "Alphabetique") {
+
+			
+			
+		}
 	}
 
 }

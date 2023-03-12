@@ -72,7 +72,12 @@ public class PrimaryPage extends HttpServlet {
     
     
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        this.getServletContext().getRequestDispatcher("/WEB-INF/primaryJ.jsp").forward(request, response);
+    	try {
+			request.setAttribute("etudiant", etudiantDao.listerSansGroupe());
+		} catch (DaoException e) {
+        	request.setAttribute("erreur", e.getMessage());
+        }
+    	this.getServletContext().getRequestDispatcher("/WEB-INF/primaryJ.jsp").forward(request, response);
     }
 
     public void doPost( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException {

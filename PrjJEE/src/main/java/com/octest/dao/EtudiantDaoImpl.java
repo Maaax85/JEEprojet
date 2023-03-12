@@ -63,7 +63,7 @@ public class EtudiantDaoImpl implements EtudiantDao {
         try {
             connexion = daoFactory.getConnection();
             statement = connexion.createStatement();
-            resultat = statement.executeQuery("SELECT e.nom, e.prenom "
+            resultat = statement.executeQuery("SELECT * "
             		+ "FROM etudiant e "
             		+ "LEFT OUTER JOIN equipe_etudiant ee ON e.id_etudiant = ee.id_etudiant "
             		+ "WHERE ee.id_etudiant IS NULL;");

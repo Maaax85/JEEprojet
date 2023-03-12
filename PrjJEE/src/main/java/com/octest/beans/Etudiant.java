@@ -23,6 +23,11 @@ public class Etudiant {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "Etudiant [nom=" + nom + ", prenom=" + prenom + "]";
+	}
+
 	public Etudiant(String[] infosEtu) {
 		if (infosEtu.length == 5) {
 			this.nom = infosEtu[0];

@@ -24,20 +24,23 @@
 </head>
 <body>
 
+	<c:if test="${ !empty erreur }">
+		<p style="color: red;">
+			<c:out value="${ erreur }" />
+		</p>
+	</c:if>
 	<form>
 		<p>
 			<a href="Primary">Premiere page</a>
 		</p>
 	</form>
 
-	<form method="post" action="Secondary">
-		<ul>
-			<c:forEach var="equipes" items="${ equipes }">
-				<li><c:out value="${ equipes.nom }" /> </li>
-			</c:forEach>
-		</ul>
+	<ul>
+		<c:forEach var="equipes" items="${ equipes }">
+			<li><c:out value="${ equipes.nom }" /></li>
+		</c:forEach>
+	</ul>
 
-	</form>
 
 	<form method="post" action="Secondary">
 		<input type="hidden" name="action"

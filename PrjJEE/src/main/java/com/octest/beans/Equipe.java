@@ -1,14 +1,20 @@
 package com.octest.beans;
 
+import java.util.List;
 
 public class Equipe {
 
 	private String nom;
 	int nombreEtu;
-	public Etudiant[] membres;
+	 List<Etudiant> membres;
 
-	public Equipe(int nombreEtu, String nom, Etudiant[] membres) throws BeanException {
-		if (membres.length != nombreEtu) {
+	@Override
+	public String toString() {
+		return "Equipe [nom=" + nom + "]";
+	}
+
+	public Equipe(int nombreEtu, String nom, List<Etudiant> membres) throws BeanException {
+		if (membres.size() != nombreEtu) {
 			throw new BeanException("Le nombre d'étudiant ne correspond pas");}
 		else {
 			this.nom = nom;
@@ -33,11 +39,11 @@ public class Equipe {
 		this.nom = nom;
 	}
 
-	public Etudiant[] getMembres() {
+	public  List<Etudiant> getMembres() {
 		return membres;
 	}
 
-	public void setMembres(Etudiant[] membres) {
+	public void setMembres( List<Etudiant> membres) {
 		this.membres = membres;
 	}
 

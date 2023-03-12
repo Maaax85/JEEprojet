@@ -84,6 +84,12 @@
 			type="submit" value="Importer une liste d'étudiants" />
 
 	</form>
+	
+	<ul>
+			<c:forEach var="etudiant" items="${ etudiant }">
+				<li><c:out value="${ etudiant.nom }" /> </li>
+			</c:forEach>
+		</ul>
 
 </body>
 </html>

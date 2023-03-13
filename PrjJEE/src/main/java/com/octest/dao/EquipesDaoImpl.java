@@ -122,7 +122,7 @@ public class EquipesDaoImpl implements EquipeDao {
 
 		try {
 			for (int i = 0; i < this.listerEquipes().size(); i++) {
-				if (this.listerEquipes().get(i).getNom() == nomEquipe
+				if (this.listerEquipes().get(i).getNom().equals(nomEquipe)
 						&& this.listerEquipes().get(i).getNombreEtu() < 6) {
 					boolean etuEstPresent = false;
 					for (int j = 0; j < this.listerEquipes().get(i).getNombreEtu(); j++) {
@@ -135,22 +135,27 @@ public class EquipesDaoImpl implements EquipeDao {
 						try {
 							ResultSet resultatIdEquipe = null;
 							connexion = daoFactory.getConnection();
-							String querySelectIdEquipe = "SELECT equipe.id FROM equipe WHERE equipe.nom = ?";
+							String querySelectIdEquipe = "SELECT equipe.id_equipe FROM equipe WHERE equipe.nom = ?";
 							PreparedStatement stmtSelectIdEquipe = connexion.prepareStatement(querySelectIdEquipe);
 							stmtSelectIdEquipe.setString(1, nomEquipe);
 							resultatIdEquipe = stmtSelectIdEquipe.executeQuery();
+							resultatIdEquipe.next();
 
 							ResultSet resultatIdEtudiant = null;
-							String querySelectIdEtudiant = "SELECT equipe.id FROM equipe WHERE equipe.nom = ?";
+							String querySelectIdEtudiant = "SELECT etudiant.id_etudiant FROM etudiant WHERE etudiant.nom = ?";
 							PreparedStatement stmtSelectIdEtudiant = connexion.prepareStatement(querySelectIdEtudiant);
-							stmtSelectIdEtudiant.setString(1, nomEquipe);
+							stmtSelectIdEtudiant.setString(1, nomEtudiant);
 							resultatIdEtudiant = stmtSelectIdEtudiant.executeQuery();
-
+							resultatIdEtudiant.next();
+							
 							PreparedStatement preparedStatementInsert = null;
 							preparedStatementInsert = connexion.prepareStatement(
 									"INSERT INTO equipe_etudiant(id_equipe, id_etudiant) VALUES(?, ?);");
 							preparedStatementInsert.setString(1, resultatIdEquipe.getString("id_equipe"));
-							preparedStatementInsert.setString(2, resultatIdEtudiant.getString("id_eleve"));
+							System.out.println("0");
+							preparedStatementInsert.setString(2, resultatIdEtudiant.getString("id_etudiant"));
+							System.out.println("1");
+							System.out.println(preparedStatementInsert.toString());
 							preparedStatementInsert.executeUpdate();
 
 						} catch (SQLException e) {
@@ -183,7 +188,7 @@ public class EquipesDaoImpl implements EquipeDao {
 	public void retirerEtudiant(String nomEquipe, String nomEtudiant) throws DaoException {
 		try {
 			for (int i = 0; i < this.listerEquipes().size(); i++) {
-				if (this.listerEquipes().get(i).getNom() == nomEquipe
+				if (this.listerEquipes().get(i).getNom().equals(nomEquipe)
 						&& this.listerEquipes().get(i).getNombreEtu() < 6) {
 					for (int j = 0; j < this.listerEquipes().get(i).getNombreEtu(); j++) {
 						if (this.listerEquipes().get(i).getMembres().get(j).getNom().equals(nomEtudiant)) {
@@ -191,13 +196,13 @@ public class EquipesDaoImpl implements EquipeDao {
 							try {
 								ResultSet resultatIdEquipe = null;
 								connexion = daoFactory.getConnection();
-								String querySelectIdEquipe = "SELECT equipe.id FROM equipe WHERE equipe.nom = ?;";
+								String querySelectIdEquipe = "SELECT equipe.id_equipe FROM equipe WHERE equipe.nom = ?;";
 								PreparedStatement stmtSelectIdEquipe = connexion.prepareStatement(querySelectIdEquipe);
 								stmtSelectIdEquipe.setString(1, nomEquipe);
 								resultatIdEquipe = stmtSelectIdEquipe.executeQuery();
 
 								ResultSet resultatIdEtudiant = null;
-								String querySelectIdEtudiant = "SELECT equipe.id FROM equipe WHERE equipe.nom = ?;";
+								String querySelectIdEtudiant = "SELECT equipe.id_equipe FROM equipe WHERE equipe.nom = ?;";
 								PreparedStatement stmtSelectIdEtudiant = connexion
 										.prepareStatement(querySelectIdEtudiant);
 								stmtSelectIdEtudiant.setString(1, nomEquipe);
@@ -239,7 +244,7 @@ public class EquipesDaoImpl implements EquipeDao {
 
 	@Override
 	public void genererCompositionAuto(String critereGeneration, int nbEquipeACreer) throws DaoException {
-		if (critereGeneration == "Random") {
+		if (critereGeneration.equals("Random")) {
 			try {
 				int nbEtuParEquipe = this.etudiantDao.listerSansGroupe().size() / nbEquipeACreer;
 				int nbEtuRestant = this.etudiantDao.listerSansGroupe().size() % nbEquipeACreer;
@@ -322,7 +327,8 @@ public class EquipesDaoImpl implements EquipeDao {
 				try {
 					connexion = daoFactory.getConnection();
 					PreparedStatement preparedStatementUpdate = null;
-					preparedStatementUpdate = connexion.prepareStatement("UPDATE equipe SET nom = ? WHERE nom_equipe = ?;");
+					preparedStatementUpdate = connexion
+							.prepareStatement("UPDATE equipe SET nom = ? WHERE nom_equipe = ?;");
 					preparedStatementUpdate.setString(1, nouveauNomEquipe);
 					preparedStatementUpdate.setString(1, nomEquipe);
 					preparedStatementUpdate.executeUpdate();
@@ -346,38 +352,40 @@ public class EquipesDaoImpl implements EquipeDao {
 			}
 		}
 	}
-	
+
 	public void exportEquipeCSV(String path) throws DaoException {
-//		String csvFilePath = "/path/to/csv/file.csv";
-//        String[] columnHeaders = {"Equipe", "Nom", "Prenom", "Genre", "PreviousFormation", "PreviousSite"};
-//        String[][] data = new String[this.listerEquipes().size()][6];
-//        
-//        for (int i = 0; i<this.listerEquipes().size(); i++) {
-//        	String nomEquipe = this.listerEquipes().get(i).getNom();
-//        	for (int k = 0; k<this.listerEquipes().get(i).getMembres().size(); k++) {
-//        		List<Etudiant> listeEtu = this.listerEquipes().get(i).getMembres();
-//        		data[i] = [nomEquipe,""];
-//        	}
-//        }
-//
-//        try (FileWriter writer = new FileWriter(csvFilePath)) {
-//            // Écrire les en-têtes de colonne
-//            writer.write(String.join(",", columnHeaders));
-//            writer.write("\n");
-//
-//            // Écrire les données dans le fichier
-//            for (String[] row : data) {
-//                writer.write(String.join(",", row));
-//                writer.write("\n");
-//            }
-//
-//            System.out.println("Le fichier CSV a été créé avec succès !");
-//        } catch (IOException e) {
-//            System.out.println("Une erreur s'est produite lors de la création du fichier CSV.");
-//            e.printStackTrace();
-//        }
+		String csvFilePath = path;
+		String[] columnHeaders = { "Equipe", "Nom", "Prenom", "Genre", "PreviousFormation", "PreviousSite" };
+		String[][] data = new String[this.listerEquipes().size()][6];
+
+		for (int i = 0; i < this.listerEquipes().size(); i++) {
+			String nomEquipe = this.listerEquipes().get(i).getNom();
+			for (int k = 0; k < this.listerEquipes().get(i).getMembres().size(); k++) {
+				List<Etudiant> listeEtu = this.listerEquipes().get(i).getMembres();
+				data[i] = new String[] { nomEquipe, listeEtu.get(k).getNom(), listeEtu.get(k).getPrenom(),
+						listeEtu.get(k).getGenre(), listeEtu.get(k).getPreviousFormation(),
+						listeEtu.get(k).getPreviousSite() };
+			}
+		}
+
+		try (FileWriter writer = new FileWriter(csvFilePath + "Equipe.csv")) {
+			// Écrire les en-têtes de colonne
+			writer.write(String.join(",", columnHeaders));
+			writer.write("\n");
+
+			// Écrire les données dans le fichier
+			for (String[] row : data) {
+				writer.write(String.join(",", row));
+				writer.write("\n");
+			}
+
+			System.out.println("Le fichier CSV a été créé avec succès !");
+		} catch (IOException e) {
+			System.out.println("Une erreur s'est produite lors de la création du fichier CSV.");
+			e.printStackTrace();
+		}
 	}
-	
+
 	public List<Etudiant> listerEtudiantsEquipe(String nomEquipe) throws DaoException {
 		List<Etudiant> listeEtudiant = null;
 		for (int i = 0; i < this.listerEquipes().size(); i++) {

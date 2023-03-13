@@ -72,11 +72,6 @@ public class PrimaryPage extends HttpServlet {
     
     
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	try {
-			request.setAttribute("etudiant", etudiantDao.listerSansGroupe());
-		} catch (DaoException e) {
-        	request.setAttribute("erreur", e.getMessage());
-        }
     	this.getServletContext().getRequestDispatcher("/WEB-INF/primaryJ.jsp").forward(request, response);
     }
 

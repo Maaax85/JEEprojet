@@ -14,7 +14,7 @@ public class Equipe {
 	}
 
 	public Equipe(int nombreEtu, String nom, List<Etudiant> membres) throws BeanException {
-		if (membres.size() != nombreEtu) {
+		if (membres !=null && membres.size() != nombreEtu) {
 			throw new BeanException("Le nombre d'étudiant ne correspond pas");}
 		else {
 			this.nom = nom;

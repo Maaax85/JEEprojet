@@ -1,7 +1,6 @@
 package com.octest.servlets;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -9,7 +8,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import com.octest.dao.DaoException;
 import com.octest.dao.DaoFactory;
@@ -30,20 +28,27 @@ public class SecondaryPage extends HttpServlet {
 	String path = Config.PATH;
 	int nombreEquipeACreer = 10;
 
-	private static ArrayList<String> infos;
 	private EquipeDao equipeDao;
 	private EtudiantDao etudiantDao;
 
 	public void init() throws ServletException {
-		DaoFactory daoFactory = DaoFactory.getInstance();
-		this.equipeDao = daoFactory.getEquipeDao();
-		this.etudiantDao = daoFactory.getEtudiantDao();
-	}
+        DaoFactory daoFactory = DaoFactory.getInstance();
+        this.equipeDao = daoFactory.getEquipeDao();
+        this.etudiantDao = daoFactory.getEtudiantDao();
+//        try {
+//			this.equipeDao.exportEquipeCSV(path);
+//		} catch (DaoException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}	
+    }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
 			request.setAttribute("equipes", equipeDao.listerEquipes());
+			request.setAttribute("etudiantsSansEquipe", etudiantDao.listerSansGroupe());
+			request.setAttribute("equipeDao", equipeDao);
 		} catch (DaoException e) {
 			request.setAttribute("erreur", e.getMessage());
 		}
@@ -55,54 +60,22 @@ public class SecondaryPage extends HttpServlet {
 		String action = request.getParameter("action");
 		if (action != null) {
 			if (action.equals("boutonCompositionAutomatique")) {
-
+				try {
+					String critere = request.getParameter("critere");
+					this.equipeDao.genererCompositionAuto(critere, this.nombreEquipeACreer);
+				} catch (DaoException e) {
+					e.printStackTrace();
+				}
 			} else if (action.equals("boutonLoadEtus")) {
 
 			}
 		}
 
-		HttpSession session = request.getSession();
 		this.getServletContext().getRequestDispatcher("/WEB-INF/secondaryJ.jsp").forward(request, response);
 	}
 
 	public void setNombreEquipe(int nb) {
 		this.nombreEquipeACreer = nb;
-	}
-
-	public void genererCompositionAuto(String critereGeneration) {
-		try {
-			this.equipeDao.genererCompositionAuto(critereGeneration, this.nombreEquipeACreer);
-		} catch (DaoException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void addEtudiant(String nomEquipe, String nomEtudiant) {
-		try {
-			this.equipeDao.ajouterEtudiant(nomEquipe, nomEtudiant);
-		} catch (DaoException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void removeEtudiant(String nomEquipe, String nomEtudiant) {
-		try {
-			this.equipeDao.retirerEtudiant(nomEquipe, nomEtudiant);
-		} catch (DaoException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void exportEquipeCSV() {
-		
-	}
-	
-	public void changerNomEquipe(String nomEquipe, String nouveauNomEquipe) {
-		try {
-			this.equipeDao.changerNomEquipe(nomEquipe, nouveauNomEquipe);
-		} catch (DaoException e) {
-			e.printStackTrace();
-		}
 	}
 
 }

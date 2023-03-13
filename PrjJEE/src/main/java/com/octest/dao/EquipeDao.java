@@ -17,4 +17,9 @@ public interface EquipeDao {
 
 	void genererCompositionAuto(String critereGeneration, int nbEquipeACreer) throws DaoException;
 
+	void changerNomEquipe(String nomEquipe, String nouveauNomEquipe) throws DaoException;
+
+	List<Etudiant> listerEtudiantsEquipe(String nomEquipe) throws DaoException;
+
+	void exportEquipeCSV(String path) throws DaoException;
 }

@@ -39,7 +39,7 @@ public class Equipe {
 		this.nom = nom;
 	}
 
-	public  List<Etudiant> getMembres() {
+	public List<Etudiant> getMembres() {
 		return membres;
 	}
 

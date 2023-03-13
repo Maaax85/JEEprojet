@@ -1,11 +1,7 @@
 package com.octest.servlets;
 
 import java.io.IOException;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Random;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -15,9 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.octest.beans.BeanException;
-import com.octest.beans.Equipe;
-import com.octest.beans.Etudiant;
 import com.octest.dao.DaoException;
 import com.octest.dao.DaoFactory;
 import com.octest.dao.EquipeDao;
@@ -77,7 +70,11 @@ public class SecondaryPage extends HttpServlet {
 	}
 
 	public void genererCompositionAuto(String critereGeneration) {
-		
+		try {
+			this.equipeDao.genererCompositionAuto(critereGeneration, this.nombreEquipeACreer);
+		} catch (DaoException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void addEtudiant(String nomEquipe, String nomEtudiant) {
@@ -97,7 +94,15 @@ public class SecondaryPage extends HttpServlet {
 	}
 
 	public void exportEquipeCSV() {
-
+		
+	}
+	
+	public void changerNomEquipe(String nomEquipe, String nouveauNomEquipe) {
+		try {
+			this.equipeDao.changerNomEquipe(nomEquipe, nouveauNomEquipe);
+		} catch (DaoException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

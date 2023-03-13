@@ -1,7 +1,6 @@
 package com.octest.servlets;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -30,20 +29,21 @@ public class SecondaryPage extends HttpServlet {
 	String path = Config.PATH;
 	int nombreEquipeACreer = 10;
 
-	private static ArrayList<String> infos;
 	private EquipeDao equipeDao;
 	private EtudiantDao etudiantDao;
 
 	public void init() throws ServletException {
-		DaoFactory daoFactory = DaoFactory.getInstance();
-		this.equipeDao = daoFactory.getEquipeDao();
-		this.etudiantDao = daoFactory.getEtudiantDao();
-	}
+        DaoFactory daoFactory = DaoFactory.getInstance();
+        this.equipeDao = daoFactory.getEquipeDao();
+        this.etudiantDao = daoFactory.getEtudiantDao();
+
+    }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
 			request.setAttribute("equipes", equipeDao.listerEquipes());
+			request.setAttribute("etudiantsSansEquipe", etudiantDao.listerSansGroupe());
 		} catch (DaoException e) {
 			request.setAttribute("erreur", e.getMessage());
 		}
@@ -61,7 +61,6 @@ public class SecondaryPage extends HttpServlet {
 			}
 		}
 
-		HttpSession session = request.getSession();
 		this.getServletContext().getRequestDispatcher("/WEB-INF/secondaryJ.jsp").forward(request, response);
 	}
 

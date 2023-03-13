@@ -5,18 +5,27 @@
 <head>
 <meta charset="utf-8" />
 <title>Première page</title>
-
 <style>
-.left {
-	float: left;
+body {
+	max-width: 800px;
+	margin: 0 auto;
+	text-align: center;
 }
 
-.right {
-	float: right;
+h1 {
+	font-weight: bold;
+	margin: 10px;
 }
 
-#submit-print {
-	clear: both;
+p {
+	margin: 10px 0;
+	padding: 0;
+	font-size: 16px;
+}
+
+label {
+	font-weight: bold;
+	margin-bottom: 10px;
 }
 </style>
 
@@ -33,11 +42,11 @@
 	<c:out value="${ previousSite }" />
 	<c:out value="${ previousFormation }" />
 
-	<form>
-		<p>
-			<a href="Secondary">Seconde page</a>
-		</p>
-	</form>
+
+	<h1>
+		<a href="Secondary">Seconde page</a>
+	</h1>
+
 
 	<form method="post" action="Primary">
 
@@ -84,12 +93,7 @@
 			type="submit" value="Importer une liste d'étudiants" />
 
 	</form>
-	
-	<ul>
-			<c:forEach var="etudiant" items="${ etudiant }">
-				<li><c:out value="${ etudiant.nom }" /> </li>
-			</c:forEach>
-		</ul>
+
 
 </body>
 </html>

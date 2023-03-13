@@ -8,7 +8,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import com.octest.dao.DaoException;
 import com.octest.dao.DaoFactory;
@@ -44,6 +43,7 @@ public class SecondaryPage extends HttpServlet {
 		try {
 			request.setAttribute("equipes", equipeDao.listerEquipes());
 			request.setAttribute("etudiantsSansEquipe", etudiantDao.listerSansGroupe());
+			request.setAttribute("equipeDao", equipeDao);
 		} catch (DaoException e) {
 			request.setAttribute("erreur", e.getMessage());
 		}

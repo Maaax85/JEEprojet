@@ -101,13 +101,15 @@ li {
 		<c:forEach var="equipe" items="${ equipes }">
 			<div class="equipe">
 				<div class="nom-equipe">${ equipe.nom }</div>
-				<%-- <ul class="liste-etudiants">
-					<c:forEach var="etudiant" items="${ equipe.etudiants }">
+				<ul class="liste-etudiants">
+					<c:set var="etudiantsEquipe"
+						value="${ equipeDao.listerEtudiantsEquipe(equipe.nom) }" />
+					<c:forEach var="etudiant" items="${ etudiantsEquipe }">
 						<li class="etudiant">${ etudiant.nom }
 							<button class="btn-supprimer">Supprimer</button>
 						</li>
 					</c:forEach>
-				</ul> --%>
+				</ul>
 				<button class="btn-ajouter-etudiant">Ajouter un étudiant</button>
 				<button class="btn-modifier-nom-equipe">Modifier le nom de
 					l'équipe</button>

@@ -28,7 +28,6 @@ public class EquipesDaoImpl implements EquipeDao {
 		PreparedStatement preparedStatement = null;
 
 		try {
-			System.out.println("Entrée");
 			for (int i = 0; i < this.listerEquipes().size(); i++) {
 				
 				if (equipe.getNom().equals(this.listerEquipes().get(i).getNom())) {
@@ -293,7 +292,6 @@ public class EquipesDaoImpl implements EquipeDao {
 			}
 		} else if (critereGeneration.equals("Alphabetique")) {
 			try {
-				System.out.println("1");
 				List<Etudiant> etudiantsSansGroupe = this.etudiantDao.listerSansGroupe();
 				int nbEtuParEquipe = etudiantsSansGroupe.size() / nbEquipeACreer;
 				int nbEtuRestant = etudiantsSansGroupe.size() % nbEquipeACreer;
@@ -306,9 +304,13 @@ public class EquipesDaoImpl implements EquipeDao {
 				});
 
 				for (int i = 0; i < nbEquipeACreer; i++) {
-					String nomEquipe = "Equipe " + (i + 1);
+					Equipe equipe;
+					String nomEquipe = "Equipe "
+							+ etudiantsSansGroupe.get(0).getNom();
 					try {
-						this.ajouter(new Equipe(0, nomEquipe, null));
+						equipe = new Equipe(0, nomEquipe, null);
+						this.ajouter(equipe);
+						nomEquipe = equipe.getNom();
 					} catch (BeanException e) {
 						e.printStackTrace();
 					}
@@ -400,7 +402,6 @@ public class EquipesDaoImpl implements EquipeDao {
 				writer.write("\n");
 			}
 
-			System.out.println("Le fichier CSV a été créé avec succès !");
 		} catch (IOException e) {
 			System.out.println("Une erreur s'est produite lors de la création du fichier CSV.");
 			e.printStackTrace();

@@ -98,9 +98,7 @@ public class SecondaryPage extends HttpServlet {
 		String boutonExport = request.getParameter("boutonExport");
 		if (boutonExport != null) {
 			try {
-				System.out.println("0");
 				this.equipeDao.exportEquipeCSV(Config.PATH);
-				System.out.println("1");
 			} catch (DaoException e) {
 				e.printStackTrace();
 			}

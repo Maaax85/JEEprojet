@@ -31,43 +31,45 @@ ul {
 li {
 	margin: 10px;
 }
-
-.liste-etudiants-sans-equipe-container {
-	margin: 20px
-}
-
-.equipe-container {
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: center;
-}
-
-.equipe {
-	margin: 20px;
-	text-align: center;
-}
-
-.nom-equipe, label {
-	font-weight: bold;
-	margin-bottom: 10px;
-}
-
-.liste-etudiants {
-	list-style: none;
-	padding: 0;
-	margin: 0;
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: center;
-}
-
-.etudiant {
-	margin: 10px;
-}
-
-.btn-supprimer, .btn-ajouter, .btn-compo, .btn-modifier-nom-equipe {
-	margin: 10px;
-}
+#erreur-message {
+    color: red;
+  }
+  
+  .liste-etudiants-sans-equipe-container label {
+    font-weight: bold;
+    mrgin-top:15px;
+  }
+  
+  .equipe {
+    border: 1px solid black;
+    margin-bottom: 10px;
+    padding: 10px;
+  }
+  
+  .nom-equipe {
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .liste-etudiants {
+    list-style-type: none;
+  }
+  
+  .liste-etudiants li {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+  
+  .etudiant {
+    flex: 1;
+    margin-right: 10px;
+  }
+  
+  button {
+    margin: 10px;
+  }
 </style>
 </head>
 <body>
@@ -91,11 +93,6 @@ li {
 		<button type="submit">Valider le nombre d'équipe</button>
 	</form>
 
-	<form method="post" action="Secondary">
-		<input type="hidden" name="boutonExport" value="boutonExport" /> <input
-			type="submit" value="Exporter les équipes" />
-	</form>
-
 	<div class="liste-etudiants-sans-equipe-container">
 		<label for="liste-etudiants-sans-equipe">Liste étudiants sans
 			équipe : </label>
@@ -107,7 +104,7 @@ li {
 	</div>
 	<div class="equipe-container">
 		<c:forEach var="equipe" items="${ equipes }">
-			<div class="equipe">
+			<div class="equipe" id="equipe-${equipe.nom}">
 				<div class="nom-equipe">${ equipe.nom }</div>
 				<ul class="liste-etudiants">
 					<c:set var="etudiantsEquipe"
@@ -118,7 +115,7 @@ li {
 								<input type="hidden" name="etudiantRemove"
 									value="${etudiant.nom}" /> <input type="hidden"
 									name="equipeRemove" value="${equipe.nom}" />
-								<button type="submit">Retirer</button>
+								<button type="submit" class="remove-button">Retirer</button>
 							</form>
 						</li>
 					</c:forEach>
@@ -127,32 +124,41 @@ li {
 					<input type="hidden" name="equipeAdd" value="${equipe.nom}" /> <label
 						for="nomEtudiant">Nom de l'étudiant : </label> <input type="text"
 						name="nomEtudiant" id="nomEtudiant" />
-					<button type="submit">Ajouter l'étudiant</button>
+					<button type="submit" class="add-button">Ajouter
+						l'étudiant</button>
 				</form>
 				<form method="post" action="Secondary">
 					<input type="hidden" name="equipeModifyName" value="${equipe.nom}" />
 					<label for="nouveauNomEquipe">Nouveau nom de l'équipe : </label> <input
 						type="text" name="nouveauNomEquipe" id="nouveauNomEquipe" />
-					<button type="submit">Modifier le nom de l'équipe</button>
+
+					<button type="submit" class="modifier-nom-equipe-button">Modifier
+						le nom de l'équipe</button>
+
 				</form>
 			</div>
 		</c:forEach>
 	</div>
-
-	<form method="post" action="Secondary">
-
+	<form method="post" action="Secondary"
+		class="composition-automatique-form">
 		<p>
 			<label for="critere">Critère de génération automatique : </label> <select
 				name="critere" id="critere">
-				<option value=Random>Aléatoire</option>
-				<option value=Alphabetique>Alphabétique</option>
+				<option value="Random">Aléatoire</option>
+				<option value="Alphabetique">Alphabétique</option>
 			</select>
 		</p>
-
 		<input type="hidden" name="boutonCompositionAutomatique"
-			value="boutonCompositionAutomatique" /> <input type="submit"
-			value="Composition des équipes automatique" />
+			value="boutonCompositionAutomatique" />
+		<button type="submit" class="composition-automatique-button">Composition
+			des équipes automatique</button>
+	</form>
+	<form method="post" action="Secondary" class="export-form">
+		<input type="hidden" name="boutonExport" value="boutonExport" />
+		<button type="submit" class="export-button">Exporter les
+			équipes</button>
 	</form>
 </body>
+
 
 </html>

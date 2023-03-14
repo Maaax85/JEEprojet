@@ -109,7 +109,6 @@ public class EtudiantDaoImpl implements EtudiantDao {
         	Part part = request.getPart("fichier");
         	
             String nomFichier = this.getNomFichier(part);
-
             if (nomFichier != null && !nomFichier.isEmpty()) {
                  nomFichier = nomFichier.substring(nomFichier.lastIndexOf('/') + 1)
                         .substring(nomFichier.lastIndexOf('\\') + 1);

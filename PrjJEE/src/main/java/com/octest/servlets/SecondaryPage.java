@@ -32,16 +32,10 @@ public class SecondaryPage extends HttpServlet {
 	private EtudiantDao etudiantDao;
 
 	public void init() throws ServletException {
-        DaoFactory daoFactory = DaoFactory.getInstance();
-        this.equipeDao = daoFactory.getEquipeDao();
-        this.etudiantDao = daoFactory.getEtudiantDao();
-//        try {
-//			this.equipeDao.exportEquipeCSV(path);
-//		} catch (DaoException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}	
-    }
+		DaoFactory daoFactory = DaoFactory.getInstance();
+		this.equipeDao = daoFactory.getEquipeDao();
+		this.etudiantDao = daoFactory.getEtudiantDao();
+	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -57,25 +51,51 @@ public class SecondaryPage extends HttpServlet {
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		String action = request.getParameter("action");
-		if (action != null) {
-			if (action.equals("boutonCompositionAutomatique")) {
-				try {
-					String critere = request.getParameter("critere");
-					this.equipeDao.genererCompositionAuto(critere, this.nombreEquipeACreer);
-				} catch (DaoException e) {
-					e.printStackTrace();
-				}
-			} else if (action.equals("boutonLoadEtus")) {
-
+		String genererCompoAuto = request.getParameter("boutonCompositionAutomatique");
+		if (genererCompoAuto != null) {
+			try {
+				String critere = request.getParameter("critere");
+				this.equipeDao.genererCompositionAuto(critere, this.nombreEquipeACreer);
+			} catch (DaoException e) {
+				e.printStackTrace();
+			}
+		}
+		String equipeAdd = request.getParameter("equipeAdd");
+		if (equipeAdd != null) {
+			try {
+				String nomEtudiant = request.getParameter("nomEtudiant");
+				this.equipeDao.ajouterEtudiant(equipeAdd, nomEtudiant);
+			} catch (DaoException e) {
+				e.printStackTrace();
 			}
 		}
 
-		this.getServletContext().getRequestDispatcher("/WEB-INF/secondaryJ.jsp").forward(request, response);
-	}
+		String equipeRemove = request.getParameter("equipeRemove");
+		String etudiantRemove = request.getParameter("etudiantRemove");
+		if (equipeRemove != null && etudiantRemove != null) {
+			try {
+				this.equipeDao.retirerEtudiant(equipeRemove, etudiantRemove);
+			} catch (DaoException e) {
+				e.printStackTrace();
+			}
+		}
 
-	public void setNombreEquipe(int nb) {
-		this.nombreEquipeACreer = nb;
+		String nbEquipe = request.getParameter("nombreEquipes");
+		if (nbEquipe != null) {
+			this.nombreEquipeACreer = Integer.parseInt(nbEquipe);
+		}
+
+		String newNameEquipe = request.getParameter("nouveauNomEquipe");
+		if (newNameEquipe != null) {
+			String nomEquipe = request.getParameter("equipeModifyName");
+			try {
+				this.equipeDao.changerNomEquipe(nomEquipe, newNameEquipe);
+			} catch (DaoException e) {
+				e.printStackTrace();
+			}
+		}
+
+		response.sendRedirect(request.getContextPath() + "/Secondary");
 	}
 
 }

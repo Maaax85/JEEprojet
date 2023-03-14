@@ -123,7 +123,7 @@ public class EquipesDaoImpl implements EquipeDao {
 		try {
 			for (int i = 0; i < this.listerEquipes().size(); i++) {
 				if (this.listerEquipes().get(i).getNom().equals(nomEquipe)
-						&& this.listerEquipes().get(i).getNombreEtu() < 6) {
+						&& this.listerEquipes().get(i).getNombreEtu() < 5) {
 					boolean etuEstPresent = false;
 					for (int j = 0; j < this.listerEquipes().get(i).getNombreEtu(); j++) {
 						if (this.listerEquipes().get(i).getMembres().get(j).getNom().equals(nomEtudiant)) {
@@ -147,15 +147,12 @@ public class EquipesDaoImpl implements EquipeDao {
 							stmtSelectIdEtudiant.setString(1, nomEtudiant);
 							resultatIdEtudiant = stmtSelectIdEtudiant.executeQuery();
 							resultatIdEtudiant.next();
-							
+
 							PreparedStatement preparedStatementInsert = null;
 							preparedStatementInsert = connexion.prepareStatement(
 									"INSERT INTO equipe_etudiant(id_equipe, id_etudiant) VALUES(?, ?);");
 							preparedStatementInsert.setString(1, resultatIdEquipe.getString("id_equipe"));
-							System.out.println("0");
 							preparedStatementInsert.setString(2, resultatIdEtudiant.getString("id_etudiant"));
-							System.out.println("1");
-							System.out.println(preparedStatementInsert.toString());
 							preparedStatementInsert.executeUpdate();
 
 						} catch (SQLException e) {
@@ -188,31 +185,33 @@ public class EquipesDaoImpl implements EquipeDao {
 	public void retirerEtudiant(String nomEquipe, String nomEtudiant) throws DaoException {
 		try {
 			for (int i = 0; i < this.listerEquipes().size(); i++) {
-				if (this.listerEquipes().get(i).getNom().equals(nomEquipe)
-						&& this.listerEquipes().get(i).getNombreEtu() < 6) {
-					for (int j = 0; j < this.listerEquipes().get(i).getNombreEtu(); j++) {
+				if (this.listerEquipes().get(i).getNom().equals(nomEquipe)) {
+					for (int j = 0; j < this.listerEquipes().get(i).getMembres().size(); j++) {
 						if (this.listerEquipes().get(i).getMembres().get(j).getNom().equals(nomEtudiant)) {
 							Connection connexion = null;
 							try {
+
 								ResultSet resultatIdEquipe = null;
 								connexion = daoFactory.getConnection();
 								String querySelectIdEquipe = "SELECT equipe.id_equipe FROM equipe WHERE equipe.nom = ?;";
 								PreparedStatement stmtSelectIdEquipe = connexion.prepareStatement(querySelectIdEquipe);
 								stmtSelectIdEquipe.setString(1, nomEquipe);
 								resultatIdEquipe = stmtSelectIdEquipe.executeQuery();
+								resultatIdEquipe.next();
 
 								ResultSet resultatIdEtudiant = null;
-								String querySelectIdEtudiant = "SELECT equipe.id_equipe FROM equipe WHERE equipe.nom = ?;";
+								String querySelectIdEtudiant = "SELECT etudiant.id_etudiant FROM etudiant WHERE etudiant.nom = ?;";
 								PreparedStatement stmtSelectIdEtudiant = connexion
 										.prepareStatement(querySelectIdEtudiant);
-								stmtSelectIdEtudiant.setString(1, nomEquipe);
+								stmtSelectIdEtudiant.setString(1, nomEtudiant);
 								resultatIdEtudiant = stmtSelectIdEtudiant.executeQuery();
+								resultatIdEtudiant.next();
 
 								PreparedStatement preparedStatementDelete = null;
 								preparedStatementDelete = connexion.prepareStatement(
 										"DELETE FROM equipe_etudiant WHERE id_equipe = ? AND id_etudiant = ?;");
 								preparedStatementDelete.setString(1, resultatIdEquipe.getString("id_equipe"));
-								preparedStatementDelete.setString(2, resultatIdEtudiant.getString("id_eleve"));
+								preparedStatementDelete.setString(2, resultatIdEtudiant.getString("id_etudiant"));
 								preparedStatementDelete.executeUpdate();
 
 							} catch (SQLException e) {
@@ -273,7 +272,7 @@ public class EquipesDaoImpl implements EquipeDao {
 				}
 
 			} catch (DaoException e) {
-				e.printStackTrace();
+				throw new DaoException("Impossible de communiquer avec la base de données 3");
 			}
 		} else if (critereGeneration == "Alphabetique") {
 			try {
@@ -314,7 +313,7 @@ public class EquipesDaoImpl implements EquipeDao {
 
 				}
 			} catch (DaoException e) {
-				e.printStackTrace();
+				throw new DaoException("Impossible de communiquer avec la base de données 3");
 			}
 		}
 	}
@@ -328,9 +327,9 @@ public class EquipesDaoImpl implements EquipeDao {
 					connexion = daoFactory.getConnection();
 					PreparedStatement preparedStatementUpdate = null;
 					preparedStatementUpdate = connexion
-							.prepareStatement("UPDATE equipe SET nom = ? WHERE nom_equipe = ?;");
+							.prepareStatement("UPDATE equipe SET nom = ? WHERE nom = ?;");
 					preparedStatementUpdate.setString(1, nouveauNomEquipe);
-					preparedStatementUpdate.setString(1, nomEquipe);
+					preparedStatementUpdate.setString(2, nomEquipe);
 					preparedStatementUpdate.executeUpdate();
 				} catch (SQLException e) {
 					try {

@@ -12,7 +12,7 @@ public class Etudiant {
 			throws BeanException {
 		if (nom.length() > 10) {
 			throw new BeanException("Le nom est trop grand ! (10 caractères maximum)");
-		} if (prenom.length() > 10) {
+		} else if (prenom.length() > 10) {
 	        throw new BeanException("Le prénom est trop grand ! (10 caractères maximum)");
 	    } else {
 			this.nom = nom;
@@ -35,8 +35,6 @@ public class Etudiant {
 			this.genre = infosEtu[2];
 			this.previousSite = infosEtu[3];
 			this.previousFormation = infosEtu[4];
-
-			System.out.println("Etudiant : " + infosEtu[0]);
 		}
 	}
 

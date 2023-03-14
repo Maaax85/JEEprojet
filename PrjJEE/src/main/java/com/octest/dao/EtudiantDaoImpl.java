@@ -1,9 +1,16 @@
 package com.octest.dao;
 
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.Part;
 
 import com.octest.beans.BeanException;
 import com.octest.beans.Etudiant;
@@ -94,6 +101,61 @@ public class EtudiantDaoImpl implements EtudiantDao {
             }
         }
         return etudiants;
+    }
+    
+    @Override
+    public void loadEtus(HttpServletRequest request, String path) {
+    	try {
+        	Part part = request.getPart("fichier");
+        	
+            String nomFichier = this.getNomFichier(part);
+
+            if (nomFichier != null && !nomFichier.isEmpty()) {
+                 nomFichier = nomFichier.substring(nomFichier.lastIndexOf('/') + 1)
+                        .substring(nomFichier.lastIndexOf('\\') + 1);
+                 
+                this.addEtudiants(request, path, nomFichier);
+            }
+        }
+        catch ( Exception ePasDeFichier ){
+        	System.out.println("Pas de fichier ou mauvais type de fichier fourni");
+        }
+    }
+    
+    private String getNomFichier( Part part ) {
+        for ( String contentDisposition : part.getHeader( "content-disposition" ).split( ";" ) ) {
+            if ( contentDisposition.trim().startsWith( "filename" ) ) {
+                return contentDisposition.substring( contentDisposition.indexOf( '=' ) + 1 ).trim().replace( "\"", "" );
+            }
+        }
+        return null;
+    }
+    
+    private void addEtudiants(HttpServletRequest request, String nomChamp, String nomFichier) throws IOException {
+    	File file = new File(nomChamp+nomFichier);
+        FileReader fr = new FileReader(file);
+        BufferedReader br = new BufferedReader(fr);
+        String line = "";
+        String[] tempArr;
+        while((line = br.readLine()) != null) {
+           tempArr = line.split(",");
+           int index=0;
+           String[] infosEtu = new String[5];
+           
+           for(String tempStr : tempArr) {
+              infosEtu[index] = tempStr;
+              index++;
+           }
+           
+           try {
+			this.ajouter(new Etudiant(infosEtu));
+		} catch (DaoException e) {
+            request.setAttribute("erreur", e.getMessage());
+        }
+        
+	       request.setAttribute(nomChamp, nomFichier);
+		}
+	    br.close();
     }
 
 }

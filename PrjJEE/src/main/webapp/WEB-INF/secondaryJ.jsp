@@ -65,7 +65,7 @@ li {
 	margin: 10px;
 }
 
-.btn-supprimer, .btn-ajouter, .btn-compo {
+.btn-supprimer, .btn-ajouter, .btn-compo, .btn-modifier-nom-equipe {
 	margin: 10px;
 }
 </style>
@@ -73,23 +73,23 @@ li {
 <body>
 
 	<c:out value="${ critere }" />
-
+	<c:out value="${ nomEtudiant }" />
+	<c:out value="${ nouveauNomEquipe }" />
+	
 	<c:if test="${ !empty erreur }">
 		<p style="color: red;">
 			<c:out value="${ erreur }" />
 		</p>
 	</c:if>
-
 	<h1>
 		<a href="Primary">Premiere page</a>
 	</h1>
-
-
-	<label for="nombreEquipes">Nombre d'équipes :</label>
-	<input type="number" id="nombreEquipes" name="nombreEquipes" min="1"
-		max="10" />
-	<button class="btn-creer-equipes">Créer les équipes</button>
-
+	<form method="post" action="Secondary">
+		<label for="nombreEquipes">Nombre d'équipes :</label> <input
+			type="number" id="nombreEquipes" name="nombreEquipes" min="1"
+			max="10" />
+		<button type="submit">Valider le nombre d'équipe</button>
+	</form>
 	<div class="liste-etudiants-sans-equipe-container">
 		<label for="liste-etudiants-sans-equipe">Liste étudiants sans
 			équipe : </label>
@@ -108,13 +108,27 @@ li {
 						value="${ equipeDao.listerEtudiantsEquipe(equipe.nom) }" />
 					<c:forEach var="etudiant" items="${ etudiantsEquipe }">
 						<li class="etudiant">${ etudiant.nom }
-							<button class="btn-supprimer">Supprimer étudiant</button>
+							<form method="post" action="Secondary">
+								<input type="hidden" name="etudiantRemove"
+									value="${etudiant.nom}" /> <input type="hidden"
+									name="equipeRemove" value="${equipe.nom}" />
+								<button type="submit">Retirer</button>
+							</form>
 						</li>
 					</c:forEach>
 				</ul>
-				<button class="btn-ajouter-etudiant">Ajouter un étudiant</button>
-				<button class="btn-modifier-nom-equipe">Modifier le nom de
-					l'équipe</button>
+				<form method="post" action="Secondary">
+					<input type="hidden" name="equipeAdd" value="${equipe.nom}" /> <label
+						for="nomEtudiant">Nom de l'étudiant : </label> <input type="text"
+						name="nomEtudiant" id="nomEtudiant" />
+					<button type="submit">Ajouter l'étudiant</button>
+				</form>
+				<form method="post" action="Secondary">
+					<input type="hidden" name="equipeModifyName" value="${equipe.nom}" />
+					<label for="nouveauNomEquipe">Nouveau nom de l'équipe : </label> <input
+						type="text" name="nouveauNomEquipe" id="nouveauNomEquipe" />
+					<button type="submit">Modifier le nom de l'équipe</button>
+				</form>
 			</div>
 		</c:forEach>
 	</div>
@@ -122,18 +136,17 @@ li {
 	<form method="post" action="Secondary">
 
 		<p>
-			<label for="critere">Critère de génération automatique : </label> <select name="critere"
-				id="critere">
+			<label for="critere">Critère de génération automatique : </label> <select
+				name="critere" id="critere">
 				<option value=Random>Aléatoire</option>
 				<option value=Alphabetique>Alphabétique</option>
 			</select>
 		</p>
 
-		<input type="hidden" name="action"
+		<input type="hidden" name="boutonCompositionAutomatique"
 			value="boutonCompositionAutomatique" /> <input type="submit"
 			value="Composition des équipes automatique" />
 	</form>
-
 </body>
 
 </html>

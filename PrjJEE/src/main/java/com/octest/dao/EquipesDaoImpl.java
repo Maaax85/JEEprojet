@@ -28,6 +28,14 @@ public class EquipesDaoImpl implements EquipeDao {
 		PreparedStatement preparedStatement = null;
 
 		try {
+			System.out.println("Entrée");
+			for (int i = 0; i < this.listerEquipes().size(); i++) {
+				
+				if (equipe.getNom().equals(this.listerEquipes().get(i).getNom())) {
+					equipe.setNom(equipe.getNom()+"BIS");
+				}
+			}
+			
 			connexion = daoFactory.getConnection();
 			preparedStatement = connexion.prepareStatement("INSERT INTO equipe(nom) VALUES(?)");
 			preparedStatement.setString(1, equipe.getNom());
@@ -253,20 +261,27 @@ public class EquipesDaoImpl implements EquipeDao {
 				Random random = new Random();
 
 				for (int i = 0; i < nbEquipeACreer; i++) {
-					String nomEquipe = "Equipe " + (i + 1);
+					Equipe equipe;
+					int numeroRandomEtudiant = random.nextInt(this.etudiantDao.listerSansGroupe().size());
+					String nomEquipe = "Equipe "
+							+ this.etudiantDao.listerSansGroupe().get(numeroRandomEtudiant).getNom();
 					try {
-						this.ajouter(new Equipe(0, nomEquipe, null));
+						equipe = new Equipe(0, nomEquipe, null);
+						this.ajouter(equipe);
+						nomEquipe = equipe.getNom();
 					} catch (BeanException e) {
 						e.printStackTrace();
 					}
 
 					for (int j = 0; j < nbEtuParEquipe; j++) {
-						int numeroRandomEtudiant = random.nextInt(this.etudiantDao.listerSansGroupe().size());
 						this.ajouterEtudiant(nomEquipe,
 								this.etudiantDao.listerSansGroupe().get(numeroRandomEtudiant).getNom());
+						if (this.etudiantDao.listerSansGroupe().size() != 0) {
+							numeroRandomEtudiant = random.nextInt(this.etudiantDao.listerSansGroupe().size());
+						}
 					}
 					if (nbEtuRestant != 0) {
-						int numeroRandomEtudiant = random.nextInt(this.etudiantDao.listerSansGroupe().size());
+						numeroRandomEtudiant = random.nextInt(this.etudiantDao.listerSansGroupe().size());
 						this.ajouterEtudiant(nomEquipe,
 								this.etudiantDao.listerSansGroupe().get(numeroRandomEtudiant).getNom());
 						nbEtuRestant--;
@@ -279,38 +294,38 @@ public class EquipesDaoImpl implements EquipeDao {
 		} else if (critereGeneration.equals("Alphabetique")) {
 			try {
 				System.out.println("1");
-			    List<Etudiant> etudiantsSansGroupe = this.etudiantDao.listerSansGroupe();
-			    int nbEtuParEquipe = etudiantsSansGroupe.size() / nbEquipeACreer;
-			    int nbEtuRestant = etudiantsSansGroupe.size() % nbEquipeACreer;
+				List<Etudiant> etudiantsSansGroupe = this.etudiantDao.listerSansGroupe();
+				int nbEtuParEquipe = etudiantsSansGroupe.size() / nbEquipeACreer;
+				int nbEtuRestant = etudiantsSansGroupe.size() % nbEquipeACreer;
 
-			    Collections.sort(etudiantsSansGroupe, new Comparator<Etudiant>() {
-			        @Override
-			        public int compare(Etudiant e1, Etudiant e2) {
-			            return e1.getNom().compareTo(e2.getNom());
-			        }
-			    });
+				Collections.sort(etudiantsSansGroupe, new Comparator<Etudiant>() {
+					@Override
+					public int compare(Etudiant e1, Etudiant e2) {
+						return e1.getNom().compareTo(e2.getNom());
+					}
+				});
 
-			    for (int i = 0; i < nbEquipeACreer; i++) {
-			        String nomEquipe = "Equipe " + (i + 1);
-			        try {
-			            this.ajouter(new Equipe(0, nomEquipe, null));
-			        } catch (BeanException e) {
-			            e.printStackTrace();
-			        }
+				for (int i = 0; i < nbEquipeACreer; i++) {
+					String nomEquipe = "Equipe " + (i + 1);
+					try {
+						this.ajouter(new Equipe(0, nomEquipe, null));
+					} catch (BeanException e) {
+						e.printStackTrace();
+					}
 
-			        for (int j = 0; j < nbEtuParEquipe; j++) {
-			            Etudiant etuAAjouter = etudiantsSansGroupe.remove(0);
-			            this.ajouterEtudiant(nomEquipe, etuAAjouter.getNom());
-			        }
+					for (int j = 0; j < nbEtuParEquipe; j++) {
+						Etudiant etuAAjouter = etudiantsSansGroupe.remove(0);
+						this.ajouterEtudiant(nomEquipe, etuAAjouter.getNom());
+					}
 
-			        if (nbEtuRestant != 0) {
-			            Etudiant etuAAjouter = etudiantsSansGroupe.remove(0);
-			            this.ajouterEtudiant(nomEquipe, etuAAjouter.getNom());
-			            nbEtuRestant--;
-			        }
-			    }
+					if (nbEtuRestant != 0) {
+						Etudiant etuAAjouter = etudiantsSansGroupe.remove(0);
+						this.ajouterEtudiant(nomEquipe, etuAAjouter.getNom());
+						nbEtuRestant--;
+					}
+				}
 			} catch (DaoException e) {
-			    throw new DaoException("Impossible de communiquer avec la base de données 3");
+				throw new DaoException("Impossible de communiquer avec la base de données 3");
 			}
 		}
 	}
@@ -323,8 +338,7 @@ public class EquipesDaoImpl implements EquipeDao {
 				try {
 					connexion = daoFactory.getConnection();
 					PreparedStatement preparedStatementUpdate = null;
-					preparedStatementUpdate = connexion
-							.prepareStatement("UPDATE equipe SET nom = ? WHERE nom = ?;");
+					preparedStatementUpdate = connexion.prepareStatement("UPDATE equipe SET nom = ? WHERE nom = ?;");
 					preparedStatementUpdate.setString(1, nouveauNomEquipe);
 					preparedStatementUpdate.setString(2, nomEquipe);
 					preparedStatementUpdate.executeUpdate();
@@ -352,15 +366,15 @@ public class EquipesDaoImpl implements EquipeDao {
 	public void exportEquipeCSV(String path) throws DaoException {
 		String csvFilePath = path;
 		String[] columnHeaders = { "Equipe", "Nom", "Prenom", "Genre", "PreviousFormation", "PreviousSite" };
-		
+
 		int nbEtuEquipes = 0;
-		
-		for (int i=0 ; i<this.listerEquipes().size(); i++) {
-			for (int k=0 ; k<this.listerEquipes().get(i).getMembres().size() ; k++) {
+
+		for (int i = 0; i < this.listerEquipes().size(); i++) {
+			for (int k = 0; k < this.listerEquipes().get(i).getMembres().size(); k++) {
 				nbEtuEquipes++;
 			}
 		}
-		
+
 		String[][] data = new String[nbEtuEquipes][6];
 
 		int indexCSV = 0;

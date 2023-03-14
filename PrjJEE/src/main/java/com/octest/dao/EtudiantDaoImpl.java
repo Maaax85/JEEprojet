@@ -106,7 +106,6 @@ public class EtudiantDaoImpl implements EtudiantDao {
 	public void loadEtus(HttpServletRequest request, String path) {
 		try {
 			Part part = request.getPart("fichier");
-
 			String nomFichier = this.getNomFichier(part);
 			if (nomFichier != null && !nomFichier.isEmpty()) {
 				nomFichier = nomFichier.substring(nomFichier.lastIndexOf('/') + 1)
@@ -157,28 +156,28 @@ public class EtudiantDaoImpl implements EtudiantDao {
 	}
 
 	private void ecrireFichier(Part part, String nomFichier, String chemin) throws IOException {
-		BufferedInputStream entree = null;
-		BufferedOutputStream sortie = null;
-		try {
-			entree = new BufferedInputStream(part.getInputStream(), PrimaryPage.TAILLE_TAMPON);
-			sortie = new BufferedOutputStream(new FileOutputStream(new File(chemin + nomFichier)),
-					PrimaryPage.TAILLE_TAMPON);
+        BufferedInputStream entree = null;
+        BufferedOutputStream sortie = null;
+        try {
+            entree = new BufferedInputStream(part.getInputStream(), PrimaryPage.TAILLE_TAMPON);
+            sortie = new BufferedOutputStream(new FileOutputStream(new File(chemin + nomFichier)),
+                    PrimaryPage.TAILLE_TAMPON);
 
-			byte[] tampon = new byte[PrimaryPage.TAILLE_TAMPON];
-			int longueur;
-			while ((longueur = entree.read(tampon)) > 0) {
-				sortie.write(tampon, 0, longueur);
-			}
-		} finally {
-			try {
-				sortie.close();
-			} catch (IOException ignore) {
-			}
-			try {
-				entree.close();
-			} catch (IOException ignore) {
-			}
-		}
-	}
+            byte[] tampon = new byte[PrimaryPage.TAILLE_TAMPON];
+            int longueur;
+            while ((longueur = entree.read(tampon)) > 0) {
+                sortie.write(tampon, 0, longueur);
+            }
+        } finally {
+            try {
+                sortie.close();
+            } catch (IOException ignore) {
+            }
+            try {
+                entree.close();
+            } catch (IOException ignore) {
+            }
+        }
+    }
 
 }

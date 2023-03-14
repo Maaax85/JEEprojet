@@ -25,6 +25,7 @@ public class PrimaryPage extends HttpServlet {
     private static final long serialVersionUID = 1L;
     String path = Config.PATH;
     
+    
     public static final int TAILLE_TAMPON = 10240;
 	private EtudiantDao etudiantDao;
     
@@ -58,7 +59,8 @@ public class PrimaryPage extends HttpServlet {
 				
             } else if (action.equals("boutonLoadEtus")) {
             	try {
-					this.etudiantDao.loadEtus(request, Config.PATH);
+					this.etudiantDao.loadEtus(request, this.path);
+					
 				} catch (DaoException e) {
 					e.printStackTrace();
 				}

@@ -94,6 +94,18 @@ public class SecondaryPage extends HttpServlet {
 				e.printStackTrace();
 			}
 		}
+		
+		String boutonExport = request.getParameter("boutonExport");
+		System.out.println(boutonExport);
+		if (boutonExport != null) {
+			try {
+				System.out.println("0");
+				this.equipeDao.exportEquipeCSV(Config.PATH);
+				System.out.println("1");
+			} catch (DaoException e) {
+				e.printStackTrace();
+			}
+		}
 
 		response.sendRedirect(request.getContextPath() + "/Secondary");
 	}

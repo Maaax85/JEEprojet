@@ -75,7 +75,7 @@ li {
 	<c:out value="${ critere }" />
 	<c:out value="${ nomEtudiant }" />
 	<c:out value="${ nouveauNomEquipe }" />
-	
+
 	<c:if test="${ !empty erreur }">
 		<p style="color: red;">
 			<c:out value="${ erreur }" />
@@ -85,11 +85,17 @@ li {
 		<a href="Primary">Premiere page</a>
 	</h1>
 	<form method="post" action="Secondary">
-		<label for="nombreEquipes">Nombre d'équipes :</label> <input
+		<label for="nombreEquipes">Nombre d'équipes à rajouter :</label> <input
 			type="number" id="nombreEquipes" name="nombreEquipes" min="1"
 			max="10" />
 		<button type="submit">Valider le nombre d'équipe</button>
 	</form>
+
+	<form method="post" action="Secondary">
+		<input type="hidden" name="boutonExport" value="boutonExport" /> <input
+			type="submit" value="Exporter les équipes" />
+	</form>
+
 	<div class="liste-etudiants-sans-equipe-container">
 		<label for="liste-etudiants-sans-equipe">Liste étudiants sans
 			équipe : </label>

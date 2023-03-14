@@ -355,15 +355,26 @@ public class EquipesDaoImpl implements EquipeDao {
 	public void exportEquipeCSV(String path) throws DaoException {
 		String csvFilePath = path;
 		String[] columnHeaders = { "Equipe", "Nom", "Prenom", "Genre", "PreviousFormation", "PreviousSite" };
-		String[][] data = new String[this.listerEquipes().size()][6];
+		
+		int nbEtuEquipes = 0;
+		
+		for (int i=0 ; i<this.listerEquipes().size(); i++) {
+			for (int k=0 ; k<this.listerEquipes().get(i).getMembres().size() ; k++) {
+				nbEtuEquipes++;
+			}
+		}
+		
+		String[][] data = new String[nbEtuEquipes][6];
 
+		int indexCSV = 0;
 		for (int i = 0; i < this.listerEquipes().size(); i++) {
 			String nomEquipe = this.listerEquipes().get(i).getNom();
 			for (int k = 0; k < this.listerEquipes().get(i).getMembres().size(); k++) {
 				List<Etudiant> listeEtu = this.listerEquipes().get(i).getMembres();
-				data[i] = new String[] { nomEquipe, listeEtu.get(k).getNom(), listeEtu.get(k).getPrenom(),
+				data[indexCSV] = new String[] { nomEquipe, listeEtu.get(k).getNom(), listeEtu.get(k).getPrenom(),
 						listeEtu.get(k).getGenre(), listeEtu.get(k).getPreviousFormation(),
 						listeEtu.get(k).getPreviousSite() };
+				indexCSV++;
 			}
 		}
 

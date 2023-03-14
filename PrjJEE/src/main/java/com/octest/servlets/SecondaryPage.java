@@ -96,7 +96,6 @@ public class SecondaryPage extends HttpServlet {
 		}
 		
 		String boutonExport = request.getParameter("boutonExport");
-		System.out.println(boutonExport);
 		if (boutonExport != null) {
 			try {
 				System.out.println("0");

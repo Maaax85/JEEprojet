@@ -4,6 +4,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
@@ -274,46 +276,41 @@ public class EquipesDaoImpl implements EquipeDao {
 			} catch (DaoException e) {
 				throw new DaoException("Impossible de communiquer avec la base de données 3");
 			}
-		} else if (critereGeneration == "Alphabetique") {
+		} else if (critereGeneration.equals("Alphabetique")) {
 			try {
-				int nbEtuParEquipe = this.etudiantDao.listerSansGroupe().size() / nbEquipeACreer;
-				int nbEtuRestant = this.etudiantDao.listerSansGroupe().size() % nbEquipeACreer;
+				System.out.println("1");
+			    List<Etudiant> etudiantsSansGroupe = this.etudiantDao.listerSansGroupe();
+			    int nbEtuParEquipe = etudiantsSansGroupe.size() / nbEquipeACreer;
+			    int nbEtuRestant = etudiantsSansGroupe.size() % nbEquipeACreer;
 
-				for (int i = 0; i < nbEquipeACreer; i++) {
-					String nomEquipe = "Equipe " + (i + 1);
-					try {
-						this.ajouter(new Equipe(0, nomEquipe, null));
-					} catch (BeanException e) {
-						e.printStackTrace();
-					}
+			    Collections.sort(etudiantsSansGroupe, new Comparator<Etudiant>() {
+			        @Override
+			        public int compare(Etudiant e1, Etudiant e2) {
+			            return e1.getNom().compareTo(e2.getNom());
+			        }
+			    });
 
-					for (int j = 0; j < nbEtuParEquipe; j++) {
-						int indiceEtu = 0;
-						for (int k = 1; k < this.etudiantDao.listerSansGroupe().size(); k++) {
-							int resultat = this.etudiantDao.listerSansGroupe().get(indiceEtu).getNom()
-									.compareTo(this.etudiantDao.listerSansGroupe().get(k).getNom());
-							if (resultat > 0) {
-								indiceEtu = k;
-							}
-						}
-						this.ajouterEtudiant(nomEquipe, this.etudiantDao.listerSansGroupe().get(indiceEtu).getNom());
-					}
-					if (nbEtuRestant != 0) {
-						int indiceEtu = 0;
-						for (int k = 1; k < this.etudiantDao.listerSansGroupe().size(); k++) {
-							int resultat = this.etudiantDao.listerSansGroupe().get(indiceEtu).getNom()
-									.compareTo(this.etudiantDao.listerSansGroupe().get(k).getNom());
-							if (resultat > 0) {
-								indiceEtu = k;
-							}
-						}
-						this.ajouterEtudiant(nomEquipe, this.etudiantDao.listerSansGroupe().get(indiceEtu).getNom());
-						nbEtuRestant--;
-					}
+			    for (int i = 0; i < nbEquipeACreer; i++) {
+			        String nomEquipe = "Equipe " + (i + 1);
+			        try {
+			            this.ajouter(new Equipe(0, nomEquipe, null));
+			        } catch (BeanException e) {
+			            e.printStackTrace();
+			        }
 
-				}
+			        for (int j = 0; j < nbEtuParEquipe; j++) {
+			            Etudiant etuAAjouter = etudiantsSansGroupe.remove(0);
+			            this.ajouterEtudiant(nomEquipe, etuAAjouter.getNom());
+			        }
+
+			        if (nbEtuRestant != 0) {
+			            Etudiant etuAAjouter = etudiantsSansGroupe.remove(0);
+			            this.ajouterEtudiant(nomEquipe, etuAAjouter.getNom());
+			            nbEtuRestant--;
+			        }
+			    }
 			} catch (DaoException e) {
-				throw new DaoException("Impossible de communiquer avec la base de données 3");
+			    throw new DaoException("Impossible de communiquer avec la base de données 3");
 			}
 		}
 	}
